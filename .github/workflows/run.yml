@@ -1,0 +1,46 @@
+name: Running Bot
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [cron_job]
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PAT }}
+          repository: teaparty-id/mylpg
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Get dotenv
+        run: echo ${{ secrets.DOTENV }} | base64 --decode > .env
+
+      - name: Cache browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/playwright
+          key: ${{ runner.os }}-browser-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-browser-
+  
+      - name: Run
+        run: |
+          bun install
+          bunx playwright install
+          bun run index.ts
+
+      - name: Call dispatch
+        if: ${{always()}}
+        uses: peter-evans/repository-dispatch@v3.0.0
+        with:
+          event-type: cron_job
