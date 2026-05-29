@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch: 
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Pull docker image
+      run: docker pull docker pull ghcr.io/teaparty-id/mylpg:latest
+    - name: Build the Docker image
+      run: docker run ghcr.io/teaparty-id/mylpg:latest
