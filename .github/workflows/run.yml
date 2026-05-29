@@ -28,7 +28,7 @@ jobs:
       - name: Cache browsers
         uses: actions/cache@v4
         with:
-          path: ~/.cache/playwright
+          path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-browser-${{ hashFiles('bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-browser-
