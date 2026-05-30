@@ -32,19 +32,16 @@ jobs:
           key: ${{ runner.os }}-browser-${{ hashFiles('bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-browser-
-
-      - name: Set proxy
-        run: |
-          export https_proxy=http://damaralaedy:meilanda@id1.foolvpn.web.id:53004
-          export http_proxy=http://damaralaedy:meilanda@id1.foolvpn.web.id:53004
-
-      - name: Check myip
-        run: curl https://myip.wtf/json
-
+    
       - name: Run
         run: |
           bun install
-          bunx playwright install
+          bunx playwright install --with-deps
+          
+          export https_proxy=http://damaralaedy:meilanda@id1.foolvpn.web.id:53004
+          export http_proxy=http://damaralaedy:meilanda@id1.foolvpn.web.id:53004
+          curl https://myip.wtf/json
+          
           bun run index.ts
 
       # - name: Call dispatch
